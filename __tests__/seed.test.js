@@ -81,7 +81,7 @@ describe("seed", () => {
     });
   });
 
-  describe("users table", () => {
+  describe.only("users table", () => {
     test("users table exists", () => {
       return db
         .query(
@@ -155,7 +155,7 @@ describe("seed", () => {
     });
   });
 
-  describe("articles table", () => {
+  describe.only("articles table", () => {
     test("articles table exists", () => {
       return db
         .query(
@@ -373,7 +373,7 @@ describe("seed", () => {
     });
   });
 
-  describe("comments table", () => {
+  describe.only("comments table", () => {
     test("comments table exists", () => {
       return db
         .query(

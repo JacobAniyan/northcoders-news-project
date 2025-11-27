@@ -16,6 +16,38 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
        description VARCHAR(100) NOT NULL,
        img_url VARCHAR(1000)); `
       );
+    })
+    .then(() => {
+      return db.query(
+        `CREATE TABLE Users (
+        username VARCHAR(100) PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        avatar_url VARCHAR(1000)) `
+      );
+    })
+    .then(() => {
+      return db.query(`CREATE TABLE Articles (
+      article_id SERIAL PRIMARY KEY,
+      title VARCHAR(100) NOT NULL,
+      topic VARCHAR(100) NOT NULL,
+      FOREIGN KEY (topic) REFERENCES Topics(slug),
+      author VARCHAR(100) NOT NULL,
+      FOREIGN KEY (author) REFERENCES Users(username),
+      body TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      votes INT DEFAULT 0,
+      article_img_url VARCHAR(1000))`);
+    })
+    .then(() => {
+      return db.query(`CREATE TABLE Comments (
+      comment_id SERIAL PRIMARY KEY,
+      article_id INT NOT NULL,
+      FOREIGN KEY (article_id) REFERENCES Articles(article_id),
+      body TEXT NOT NULL,
+      votes INT DEFAULT 0,
+      author VARCHAR(100) NOT NULL,
+      FOREIGN KEY (author) REFERENCES Users(username),
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
     }); //<< write your first query in here.
 };
 module.exports = seed;
