@@ -575,7 +575,7 @@ describe("data insertion", () => {
     });
   });
 
-  test("users data has been inserted correctly", () => {
+  test.only("users data has been inserted correctly", () => {
     return db.query(`SELECT * FROM users;`).then(({ rows: users }) => {
       expect(users).toHaveLength(4);
       users.forEach((user) => {
@@ -586,7 +586,7 @@ describe("data insertion", () => {
     });
   });
 
-  test("articles data has been inserted correctly", () => {
+  test.only("articles data has been inserted correctly", () => {
     return db.query(`SELECT * FROM articles;`).then(({ rows: articles }) => {
       expect(articles).toHaveLength(13);
       articles.forEach((article) => {

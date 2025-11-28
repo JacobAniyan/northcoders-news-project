@@ -60,6 +60,40 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       );
 
       return db.query(insertTopicData);
+    })
+    .then(() => {
+      const userRows = userData.map((user) => {
+        return [user.username, user.name, user.avatar_url];
+      });
+
+      const insertUserRows = format(
+        `INSERT INTO Users (username, name, avatar_url) VALUES %L`,
+        userRows
+      );
+
+      return db.query(insertUserRows);
+    })
+    .then(() => {
+      const articleRows = articleData.map((article) => {
+        return [
+          article.title,
+          article.topic,
+          article.author,
+          article.body,
+          article.created_at,
+          article.votes,
+          article.article_img_url,
+        ];
+      });
+
+      const insertArticleRows = format(
+        `INSERT INTO Articles 
+        (title, topic, author, body, created_at, votes, article_img_url) 
+        VALUES %L RETURNING *`,
+        articleRows
+      );
+
+      return db.query(insertArticleRows);
     });
 };
 module.exports = seed;
