@@ -48,6 +48,18 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       author VARCHAR(100) NOT NULL,
       FOREIGN KEY (author) REFERENCES Users(username),
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
-    }); //<< write your first query in here.
+    })
+    .then(() => {
+      const topicRows = topicData.map((topic) => {
+        return [topic.slug, topic.description, topic.img_url];
+      });
+
+      const insertTopicData = format(
+        `INSERT INTO Topics (slug, description, img_url) VALUES %L`,
+        topicRows
+      );
+
+      return db.query(insertTopicData);
+    });
 };
 module.exports = seed;

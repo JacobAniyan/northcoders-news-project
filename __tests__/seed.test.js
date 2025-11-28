@@ -564,7 +564,7 @@ describe("seed", () => {
 });
 
 describe("data insertion", () => {
-  test("topics data has been inserted correctly", () => {
+  test.only("topics data has been inserted correctly", () => {
     return db.query(`SELECT * FROM topics;`).then(({ rows: topics }) => {
       expect(topics).toHaveLength(3);
       topics.forEach((topic) => {
