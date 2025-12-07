@@ -90,6 +90,39 @@ describe("GET /api/articles", () => {
   });
 });
 
+describe("GET /api/users", () => {
+  test("responds with an array on key of users", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        expect(Array.isArray(body.users)).toBe(true);
+      });
+  });
+  test("array contains four users", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.users.length).toBe(4);
+      });
+  });
+  test("array contains user objects with username, name and avatar_url properties", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        expect(
+          body.users.forEach((user) => {
+            expect(user).toHaveProperty("username");
+            expect(user).toHaveProperty("name");
+            expect(user).toHaveProperty("avatar_url");
+          })
+        );
+      });
+  });
+});
+
 afterAll(() => {
   db.end();
 });

@@ -1,5 +1,4 @@
-const { get } = require("../app");
-const fetchArticles = require("../models/articles.models");
+const fetchArticles = require("../models/articles.model");
 
 function getArticles(req, res) {
   return fetchArticles().then((articles) => {
