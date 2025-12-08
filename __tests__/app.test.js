@@ -73,7 +73,6 @@ describe("GET /api/articles", () => {
       .expect(200)
       .then(({ body }) => {
         expect(typeof Number(body.articles.comment_count)).toBe("number");
-        // console.log(body.articles);
       });
   });
 
@@ -119,6 +118,33 @@ describe("GET /api/users", () => {
             expect(user).toHaveProperty("avatar_url");
           })
         );
+      });
+  });
+});
+
+describe("GET /api/articles/:article_id", () => {
+  test("responds with an object", () => {
+    return request(app)
+      .get("/api/articles/2")
+      .expect(200)
+      .then(({ body }) => {
+        expect(typeof body).toBe("object");
+      });
+  });
+  test("responds with correct article object", () => {
+    return request(app)
+      .get("/api/articles/2")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article.article_id).toBe(2);
+        expect(body.article).toHaveProperty("author");
+        expect(body.article).toHaveProperty("title");
+        expect(body.article).toHaveProperty("article_id");
+        expect(body.article).toHaveProperty("body");
+        expect(body.article).toHaveProperty("topic");
+        expect(body.article).toHaveProperty("created_at");
+        expect(body.article).toHaveProperty("votes");
+        expect(body.article).toHaveProperty("article_img_url");
       });
   });
 });
