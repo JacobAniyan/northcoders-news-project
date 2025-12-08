@@ -147,6 +147,23 @@ describe("GET /api/articles/:article_id", () => {
         expect(body.article).toHaveProperty("article_img_url");
       });
   });
+
+  test("responds with Not Found message for ID that is not in database", () => {
+    return request(app)
+      .get("/api/articles/9999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Article Not Found");
+      });
+  });
+  test("responds with Invalid ID message for invalid IDs", () => {
+    return request(app)
+      .get("/api/articles/invalid-id")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
 });
 
 afterAll(() => {

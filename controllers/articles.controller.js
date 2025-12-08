@@ -9,11 +9,15 @@ function getArticles(req, res) {
   });
 }
 
-function getArticlesByID(req, res) {
+function getArticlesByID(req, res, next) {
   const { article_id } = req.params;
-  return fetchArticlesByID(article_id).then((articleByID) => {
-    res.status(200).send({ article: articleByID });
-  });
+  return fetchArticlesByID(article_id)
+    .then((articleByID) => {
+      res.status(200).send({ article: articleByID });
+    })
+    .catch((err) => {
+      next(err);
+    });
 }
 
 module.exports = { getArticles, getArticlesByID };
