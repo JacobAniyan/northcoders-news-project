@@ -4,6 +4,7 @@ const getTopics = require("./controllers/topics.controller");
 const {
   getArticles,
   getArticlesByID,
+  getArticleComments,
 } = require("./controllers/articles.controller");
 const getUsers = require("./controllers/users.controller");
 const {
@@ -20,6 +21,8 @@ app.get("/api/articles", getArticles);
 app.get("/api/users", getUsers);
 
 app.get("/api/articles/:article_id", getArticlesByID);
+
+app.get("/api/articles/:article_id/comments", getArticleComments);
 
 app.all("/*invalidpath", handleInvalidRoute);
 

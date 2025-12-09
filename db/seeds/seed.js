@@ -76,14 +76,13 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
     })
     .then((articleResult) => {
       const articleInfo = articleResult.rows;
-
       const commentQueryString = format(
         `INSERT INTO comments (article_id, body, votes, author, created_at) VALUES %L`,
         commentData.map((comment) => {
           // Foreach Comment look through the articles data to find the
           // article_id that matches the article_title of the comment
           const { article_id } = articleInfo.find((info) => {
-            return info.article_title === comment.title;
+            return info.title === comment.article_title;
           });
           return [
             article_id,
