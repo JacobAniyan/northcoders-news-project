@@ -1,68 +1,40 @@
 const db = require("../connection");
 const format = require("pg-format");
+const { dropTables, createTables } = require("./manageTables");
+const getArticleID = require("./utils");
 
 const seed = ({ topicData, userData, articleData, commentData }) => {
-  return db
-    .query(
-      `
-    DROP TABLE IF EXISTS comments;
-    DROP TABLE IF EXISTS articles;
-    DROP TABLE IF EXISTS users;
-    DROP TABLE IF EXISTS topics;
-
-    CREATE TABLE topics (
-      slug VARCHAR(255) PRIMARY KEY, 
-      description VARCHAR(255), 
-      img_url VARCHAR(1000)
-    );
-
-    CREATE TABLE users (
-      username VARCHAR(255) PRIMARY KEY,
-      name VARCHAR(255),
-      avatar_url VARCHAR(1000)
-    ); 
-
-    CREATE TABLE articles (
-      article_id SERIAL PRIMARY KEY,
-      title VARCHAR(255), 
-      topic VARCHAR(255) REFERENCES topics(slug), 
-      author VARCHAR(255) REFERENCES users(username), 
-      body TEXT, 
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
-      votes INT DEFAULT 0, 
-      article_img_url VARCHAR(1000)
-    ); 
-
-    CREATE TABLE comments (
-      comment_id SERIAL PRIMARY KEY,
-      article_id INT REFERENCES articles(article_id),
-      body TEXT,
-      votes INT DEFAULT 0, 
-      author VARCHAR(255) REFERENCES users(username), 
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-    `
-    )
+  return dropTables()
     .then(() => {
-      const topicsQueryString = format(
-        `INSERT INTO topics (description, slug, img_url) VALUES %L`,
-        topicData.map((topic) => [topic.description, topic.slug, topic.img_url])
-      );
-
-      const usersQueryString = format(
-        `INSERT INTO users (username, name, avatar_url) VALUES %L`,
-        userData.map((user) => [user.username, user.name, user.avatar_url])
-      );
-
-      const topics = db.query(topicsQueryString);
-      const users = db.query(usersQueryString);
-
-      return Promise.all([topics, users]);
+      return createTables();
     })
     .then(() => {
-      const articlesQueryString = format(
-        `INSERT INTO articles (title, topic, author, body, created_at, votes, article_img_url) VALUES %L RETURNING article_id, title`,
-        articleData.map((article) => [
+      const topicRows = topicData.map((topic) => {
+        return [topic.slug, topic.description, topic.img_url];
+      });
+
+      const insertTopicData = format(
+        `INSERT INTO Topics (slug, description, img_url) VALUES %L`,
+        topicRows
+      );
+
+      return db.query(insertTopicData);
+    })
+    .then(() => {
+      const userRows = userData.map((user) => {
+        return [user.username, user.name, user.avatar_url];
+      });
+
+      const insertUserRows = format(
+        `INSERT INTO Users (username, name, avatar_url) VALUES %L`,
+        userRows
+      );
+
+      return db.query(insertUserRows);
+    })
+    .then(() => {
+      const articleRows = articleData.map((article) => {
+        return [
           article.title,
           article.topic,
           article.author,
@@ -70,32 +42,40 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
           article.created_at,
           article.votes,
           article.article_img_url,
-        ])
-      );
-      return db.query(articlesQueryString);
-    })
-    .then((articleResult) => {
-      const articleInfo = articleResult.rows;
-      const commentQueryString = format(
-        `INSERT INTO comments (article_id, body, votes, author, created_at) VALUES %L`,
-        commentData.map((comment) => {
-          // Foreach Comment look through the articles data to find the
-          // article_id that matches the article_title of the comment
-          const { article_id } = articleInfo.find((info) => {
-            return info.title === comment.article_title;
-          });
-          return [
-            article_id,
-            comment.body,
-            comment.votes,
-            comment.author,
-            comment.created_at,
-          ];
-        })
+        ];
+      });
+
+      const insertArticleRows = format(
+        `INSERT INTO Articles 
+        (title, topic, author, body, created_at, votes, article_img_url) 
+        VALUES %L RETURNING *`,
+        articleRows
       );
 
-      const comments = db.query(commentQueryString);
-      return comments;
+      return db.query(insertArticleRows);
+    })
+    .then(({ rows }) => {
+      const titleRef = getArticleID(rows, "title", "article_id");
+
+      const commentRows = commentData.map((comment) => {
+        return [
+          titleRef[comment.article_title], // use article_title property from actual data to refer to article_id
+          comment.body,
+          comment.votes,
+          comment.author,
+          comment.created_at,
+        ];
+      });
+
+      const insertCommentRows = format(
+        `INSERT INTO Comments
+          (article_id, body, votes, author, created_at)
+          VALUES %L`,
+        commentRows
+      );
+
+      return db.query(insertCommentRows);
     });
 };
+
 module.exports = seed;

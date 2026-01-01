@@ -46,4 +46,20 @@ function fetchArticleComments(article_id) {
     });
 }
 
-module.exports = { fetchArticles, fetchArticlesByID, fetchArticleComments };
+function addArticleComment(article_id, comment) {
+  return db
+    .query(
+      "INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING author, body",
+      [article_id, comment.username, comment.body]
+    )
+    .then(({ rows }) => {
+      return rows;
+    });
+}
+
+module.exports = {
+  fetchArticles,
+  fetchArticlesByID,
+  fetchArticleComments,
+  addArticleComment,
+};

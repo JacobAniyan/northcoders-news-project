@@ -208,6 +208,24 @@ describe("GET /api/articles/:article_id/comments", () => {
   });
 });
 
+// describe("POST /api/articles/:article_id/comments", () => {
+//   test("responds with an object with properties username, body", () => {
+//     const newComment = {
+//       username: "lurker",
+//       body: "example comment",
+//     };
+//     return request(app)
+//       .post("/api/articles/1/comments")
+//       .send(newComment)
+//       .expect(201)
+//       .then(({ body }) => {
+//         expect(typeof body.comment).toBe("object");
+//         expect(body.comment).toHaveProperty("author");
+//         expect(body.comment).toHaveProperty("body");
+//       });
+//   });
+// });
+
 afterAll(() => {
   db.end();
 });

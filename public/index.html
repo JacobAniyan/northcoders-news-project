@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Documentation</title>
+  </head>
+  <body>
+    <header>
+      <h1><span style="color: red">Northcoders</span> News Documentation</h1>
+      <hr />
+    </header>
+    <section>
+      <h2>About</h2>
+      <p>This webpage provides documentation on the Northcoders News API.</p>
+    </section>
+    <nav class="menu">
+      <ul>
+        <li><a href="http://localhost:8000/api/topics">Topics</a></li>
+        <li><a href="http://localhost:8000/api/articles">Articles</a></li>
+        <li><a href="http://localhost:8000/api/users">Users</a></li>
+      </ul>
+    </nav>
+    <br />
+    <section>
+      <h2>GET /api/topics</h2>
+      <p>
+        This endpoint will list the slug (URL-friendly identifier) and
+        description of each topic.
+      </p>
+      <p>
+        Responds with an object with key of topics, which has value containing
+        an array of topic objects.
+      </p>
+    </section>
+    <section>
+      <h2>GET /api/articles</h2>
+      <p>
+        This endpoint will list articles with its title, author, id, topic,
+        date, votes, image URL and comment count. They are listed from most
+        recent.
+      </p>
+      <p>
+        Responds with an object with key of articles, which has value containing
+        an array of article objects.
+      </p>
+    </section>
+
+    <section>
+      <h2>GET /api/users</h2>
+      <p>
+        This endpoint will list all users of the API with their usernames, name
+        and avatar URL.
+      </p>
+      <p>
+        Responds with an object with key of users, which has value containing an
+        array of user objects.
+      </p>
+    </section>
+
+    <section>
+      <h2>GET /api/articles/:article_id</h2>
+      <p>
+        This endpoint will respond with an article matching the requested
+        article ID.
+      </p>
+      <p>
+        Responds with an object with key of article, which has value containing
+        an article object.
+      </p>
+    </section>
+
+    <section>
+      <h2>GET /api/articles/:article_id/comments</h2>
+      <p>
+        This endpoint will respond with the comments of an article matching the
+        requested article ID.
+      </p>
+      <p>
+        Responds with an object with key of comments, which has value containing
+        an array comment objects.
+      </p>
+    </section>
+  </body>
+</html>

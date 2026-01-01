@@ -2,6 +2,7 @@ const {
   fetchArticles,
   fetchArticlesByID,
   fetchArticleComments,
+  addArticleComment,
 } = require("../models/articles.model");
 
 function getArticles(req, res) {
@@ -28,4 +29,17 @@ function getArticleComments(req, res) {
   });
 }
 
-module.exports = { getArticles, getArticlesByID, getArticleComments };
+function postArticleComment(req, res) {
+  const { article_id } = req.params;
+  const comment = req.body;
+  return addArticleComment(article_id, comment).then((comment) => {
+    res.status(201).send({ comment });
+  });
+}
+
+module.exports = {
+  getArticles,
+  getArticlesByID,
+  getArticleComments,
+  postArticleComment,
+};

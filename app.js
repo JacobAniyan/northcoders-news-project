@@ -5,6 +5,7 @@ const {
   getArticles,
   getArticlesByID,
   getArticleComments,
+  postArticleComment,
 } = require("./controllers/articles.controller");
 const getUsers = require("./controllers/users.controller");
 const {
@@ -13,6 +14,10 @@ const {
   handleCustomError,
   handleServerError,
 } = require("./errors");
+
+app.use(express.json());
+
+app.use("/api", express.static("public"));
 
 app.get("/api/topics", getTopics);
 
@@ -23,6 +28,8 @@ app.get("/api/users", getUsers);
 app.get("/api/articles/:article_id", getArticlesByID);
 
 app.get("/api/articles/:article_id/comments", getArticleComments);
+
+app.post("/api/articles/:article_id/comments", postArticleComment);
 
 app.all("/*invalidpath", handleInvalidRoute);
 

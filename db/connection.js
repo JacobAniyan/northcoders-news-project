@@ -1,16 +1,18 @@
 const { Pool } = require("pg");
+const ENV = process.env.NODE_ENV || "development";
+const pathToCorrectEnvFile = `${__dirname}/../.env.${ENV}`;
 
-const ENV = process.env.NODE_ENV || 'development'
+// configure dotenv with path to test/development env variable
+require("dotenv").config({ path: pathToCorrectEnvFile });
 
-require('dotenv').config({path: `${__dirname}/../.env.${ENV}`})
-
-const db = new Pool();
-
+// check if env variable exists
+// app needs to know which database to use
 if (!process.env.PGDATABASE) {
-    throw new Error("No PGDATABASE configured")
-} else { 
-    console.log(`Connected to ${process.env.PGDATABASE}`)
+  throw new Error("No PGDATABASE configured");
+} else {
+  console.log(`Connected to ${process.env.PGDATABASE}`);
 }
 
+const db = new Pool();
 
 module.exports = db;
