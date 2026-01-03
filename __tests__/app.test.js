@@ -209,13 +209,14 @@ describe("GET /api/articles/:article_id/comments", () => {
 });
 
 // describe("POST /api/articles/:article_id/comments", () => {
-//   test("responds with an object with properties username, body", () => {
+//   test("responds with posted comment", () => {
 //     const newComment = {
-//       username: "lurker",
+//       article_id: 2,
 //       body: "example comment",
+//       author: "lurker",
 //     };
 //     return request(app)
-//       .post("/api/articles/1/comments")
+//       .post("/api/articles/2/comments")
 //       .send(newComment)
 //       .expect(201)
 //       .then(({ body }) => {
