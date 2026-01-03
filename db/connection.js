@@ -1,9 +1,13 @@
 const { Pool } = require("pg");
 const ENV = process.env.NODE_ENV || "development";
 const pathToCorrectEnvFile = `${__dirname}/../.env.${ENV}`;
+const config = {};
 
 // configure dotenv with path to test/development env variable
 require("dotenv").config({ path: pathToCorrectEnvFile });
+
+// if ENV set to production, should hold config object with properties
+// for DATABASE_URL and max connections for pool.
 
 if (ENV === "production") {
   config.connectionString = process.env.DATABASE_URL;
@@ -20,7 +24,6 @@ if (!process.env.PGDATABASE && !process.env.DATABASE_URL) {
 
 // if ENV set to production, should hold config object with properties
 // for DATABASE_URL and max connections for pool.
-const config = {};
 
 const db = new Pool();
 
