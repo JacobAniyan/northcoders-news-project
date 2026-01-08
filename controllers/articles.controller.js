@@ -29,12 +29,16 @@ function getArticleComments(req, res) {
   });
 }
 
-function postArticleComment(req, res) {
+function postArticleComment(req, res, next) {
   const { article_id } = req.params;
-  const comment = req.body;
-  return addArticleComment(article_id, comment).then((comment) => {
-    res.status(201).send({ comment });
-  });
+  const { username, body } = req.body;
+  return addArticleComment(article_id, username, body)
+    .then((comment) => {
+      res.status(201).send({ comment });
+    })
+    .catch((err) => {
+      next(err);
+    });
 }
 
 module.exports = {

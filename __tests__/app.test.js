@@ -208,24 +208,48 @@ describe("GET /api/articles/:article_id/comments", () => {
   });
 });
 
-// describe("POST /api/articles/:article_id/comments", () => {
-//   test("responds with posted comment", () => {
-//     const newComment = {
-//       article_id: 2,
-//       body: "example comment",
-//       author: "lurker",
-//     };
-//     return request(app)
-//       .post("/api/articles/2/comments")
-//       .send(newComment)
-//       .expect(201)
-//       .then(({ body }) => {
-//         expect(typeof body.comment).toBe("object");
-//         expect(body.comment).toHaveProperty("author");
-//         expect(body.comment).toHaveProperty("body");
-//       });
-//   });
-// });
+describe("POST /api/articles/:article_id/comments", () => {
+  test("responds with posted comment", () => {
+    const newComment = {
+      username: "lurker",
+      body: "example comment",
+    };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment.author).toEqual("lurker");
+        expect(body.comment.body).toEqual("example comment");
+        expect(body.comment.article_id).toEqual(2);
+        expect(typeof body.comment).toBe("object");
+        expect(body.comment).toHaveProperty("author");
+        expect(body.comment).toHaveProperty("body");
+        expect(body.comment).toHaveProperty("article_id");
+        expect(body.comment).toHaveProperty("comment_id");
+        expect(body.comment).toHaveProperty("votes");
+        expect(body.comment).toHaveProperty("created_at");
+      });
+  });
+  test("status: 400 error response if no comment body is passed", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send({ username: "lurker" })
+      .expect(400);
+  });
+  test("status: 400 error response if no comment username is passed", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send({ body: "example comment" })
+      .expect(400);
+  });
+  test("status: 404 error response if article id does not exist", () => {
+    return request(app)
+      .post("/api/articles/999999/comments")
+      .send({ username: "lurker", body: "example comment" })
+      .expect(404);
+  });
+});
 
 afterAll(() => {
   db.end();

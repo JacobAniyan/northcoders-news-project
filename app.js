@@ -11,6 +11,7 @@ const getUsers = require("./controllers/users.controller");
 const {
   handleInvalidRoute,
   handleBadRequest,
+  handleForeignKeyViolation,
   handleCustomError,
   handleServerError,
 } = require("./errors");
@@ -37,6 +38,8 @@ app.post("/api/articles/:article_id/comments", postArticleComment);
 app.all("/*invalidpath", handleInvalidRoute);
 
 app.use(handleBadRequest);
+
+app.use(handleForeignKeyViolation);
 
 app.use(handleCustomError);
 
